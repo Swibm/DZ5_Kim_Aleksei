@@ -73,42 +73,86 @@ window.addEventListener("scroll", openModalEndOfSite)
 
 const forms = document.querySelectorAll("form")
 
-const postData = (form) => {
+
+//-------------------------------------------
+
+const postDAta = (url, data) => {
+    const req = fetch(url, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: data
+    })
+    return req
+}
+
+const bindPostData = (form) => {
     form.addEventListener("submit", (e) => {
         e.preventDefault()
 
-        const request = new XMLHttpRequest()
-        request.open("POST", "server.php")
-        request.setRequestHeader("Content-Type", "application/json")
-
         const formData = new FormData(form)
-        console.log(formData)
 
         const obj = {}
 
         formData.forEach((item, name)=> {obj[name] = item})
 
         const json = JSON.stringify(obj)
-
-        request.send(json)
-        request.addEventListener("load", () => {
-            if(request.status === 200){
-                btnSubmit = document.querySelector(".btn_recall")
-                btnSubmit.style.backgroundColor = "green"
-                btnSubmit.innerHTML = "Успешно!"
-            }
-            else {
-                btnSubmit = document.querySelector(".btn_recall")
-                btnSubmit.style.backgroundColor = "red"
-                btnSubmit.innerHTML = "Произошла ошибка"
-            }
-        })
-
-    })
+        console.log(json)
+        postDAta("server.php", json)
+            .then((response) => {
+                console.log(response)
+                if(response.status===200) {                
+                    btnSubmit = document.querySelector(".btn_recall")
+                    btnSubmit.style.backgroundColor = "green"
+                    btnSubmit.innerHTML = "Успешно!"}
+                else {
+                    btnSubmit = document.querySelector(".btn_recall")
+                    btnSubmit.style.backgroundColor = "red"
+                    btnSubmit.innerHTML = "Произошла ошибка"
+                }
+            })
+            .then((body) => console.log(body))
+            })
 }
 
 forms.forEach((item) => {
-    postData(item)
+    bindPostData(item)
 })
 
-//dz2 выводить сообщение на экран. Если статус 200, то выводить сообщение, что все ок после отправки объекта
+
+// const postData = (form) => {
+//     form.addEventListener("submit", (e) => {
+//         e.preventDefault()
+
+//         const request = new XMLHttpRequest()
+//         request.open("POST", "server.php")
+//         request.setRequestHeader("Content-Type", "application/json")
+
+//         const formData = new FormData(form)
+//         console.log(formData)
+
+//         const obj = {}
+
+//         formData.forEach((item, name)=> {obj[name] = item})
+
+//         const json = JSON.stringify(obj)
+
+//         request.send(json)
+//         request.addEventListener("load", () => {
+//             if(request.status === 200){
+//                 btnSubmit = document.querySelector(".btn_recall")
+//                 btnSubmit.style.backgroundColor = "green"
+//                 btnSubmit.innerHTML = "Успешно!"
+//             }
+//             else {
+//                 btnSubmit = document.querySelector(".btn_recall")
+//                 btnSubmit.style.backgroundColor = "red"
+//                 btnSubmit.innerHTML = "Произошла ошибка"
+//             }
+//         })
+
+//     })
+// }
+
+// forms.forEach((item) => {
+//     postData(item)
+// })
